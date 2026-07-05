@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom component styles for icons */
+@layer components {
+  .oi {
+    @apply w-8 text-base align-text-top -top-0.5 relative;
+  }
+
+  .nav-link {
+    @apply text-gray-300 rounded px-3 py-3 h-12 flex items-center;
+  }
+
+  .nav-link.active {
+    @apply bg-white/25 text-white;
+  }
+
+  .nav-link:hover {
+    @apply bg-white/10 text-white;
+  }
+
+  .btn-delete {
+    @apply bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-3 rounded text-sm;
+  }
+}
