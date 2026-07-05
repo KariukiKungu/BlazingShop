@@ -1,52 +1,52 @@
-﻿@inject ICategoryService CategoryService
+@inject ICategoryService CategoryService
 @inject ILocalStorageService LocalStorage
-@inject AuthenticationStateProvider AuthStateProvider  
+@inject AuthenticationStateProvider AuthStateProvider
 
-<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Blazing Shop</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
+<div class="bg-gray-800 text-white px-4 py-3 flex items-center justify-between md:flex-col md:items-start md:justify-start md:h-full md:bg-gradient-to-b md:from-blue-900 md:to-purple-900">
+    <a href="" class="text-xl font-semibold">Blazing Shop</a>
+    <button class="md:hidden bg-gray-700 hover:bg-gray-600 text-white p-2 rounded" @onclick="ToggleNavMenu">
+        <span class="text-lg">☰</span>
     </button>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+<nav class="@NavMenuCssClass md:block">
+    <ul class="flex flex-col text-sm">
+        <li class="px-3 py-2">
+            <NavLink class="block text-gray-300 hover:text-white hover:bg-gray-700 rounded px-3 py-2 transition" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        <li class="dropdown-divider"></li>
+        <li class="border-t border-gray-600"></li>
         @foreach (var category in CategoryService.Categories)
         {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="@category.Url">
+            <li class="px-3 py-2">
+                <NavLink class="block text-gray-300 hover:text-white hover:bg-gray-700 rounded px-3 py-2 transition" href="@category.Url">
                     <span class="oi oi-@category.Icon" aria-hidden="true"></span> @category.Name
                 </NavLink>
             </li>
         }
-        <li class="dropdown-divider"></li>
-        <li class="nav-item px-3">
+        <li class="border-t border-gray-600"></li>
+        <li class="px-3 py-2">
             <AuthorizeView>
                 <NotAuthorized>
-                    <NavLink class="nav-link" href="login">
+                    <NavLink class="block text-gray-300 hover:text-white hover:bg-gray-700 rounded px-3 py-2 transition" href="login">
                         <span class="oi oi-account-login" aria-hidden="true"></span> Login
                     </NavLink>
                 </NotAuthorized>
                 <Authorized>
-                    <a class="nav-link" @onclick="Logout" style="cursor: pointer">
+                    <a class="block text-gray-300 hover:text-white hover:bg-gray-700 rounded px-3 py-2 transition cursor-pointer" @onclick="Logout">
                         <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                     </a>
                 </Authorized>
             </AuthorizeView>
         </li>
     </ul>
-</div>
+</nav>
 
 @code {
     private bool collapseNavMenu = true;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string NavMenuCssClass => collapseNavMenu ? "hidden md:block" : "block";
 
     private void ToggleNavMenu()
     {
@@ -60,7 +60,7 @@
 
     private async void Logout()
     {
-        await  LocalStorage.RemoveItemAsync("username");
+        await LocalStorage.RemoveItemAsync("username");
         await AuthStateProvider.GetAuthenticationStateAsync();
     }
 }

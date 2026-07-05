@@ -1,62 +1,85 @@
-﻿@page "/cart"
+@page "/cart"
 @inject ICartService CartService
 
-@if (!orderPlaced)
-{
-    <h3>Shopping Cart</h3>
-    @if (cartItems == null || cartItems.Count <= 0)
+<div class="max-w-6xl mx-auto">
+    @if (!orderPlaced)
     {
-        <span>You have no items in your cart.</span>
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">Shopping Cart</h1>
+        @if (cartItems == null || cartItems.Count <= 0)
+        {
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+                <p class="text-gray-600 text-lg">You have no items in your cart.</p>
+            </div>
+        }
+        else
+        {
+            <div class="space-y-4">
+                @foreach (var item in cartItems)
+                {
+                    <div class="flex gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition">
+                        <div class="flex-shrink-0">
+                            <img src="@item.Image" alt="@item.ProductTitle" class="h-24 w-24 object-cover rounded" />
+                        </div>
+                        <div class="flex-1">
+                            <h5 class="text-lg font-semibold text-gray-800">
+                                <a href="/product/@item.ProductId" class="text-blue-600 hover:text-blue-800">@item.ProductTitle</a>
+                            </h5>
+                            <p class="text-sm text-gray-600">@item.EditionName</p>
+                            <button class="mt-2 px-3 py-1 bg-red-500 hover:bg-red-700 text-white text-sm rounded transition" @onclick="@(() => DeleteItem(item))">
+                                Delete
+                            </button>
+                        </div>
+                        <div class="flex flex-col items-end justify-between">
+                            <p class="text-lg font-bold text-gray-800">$@(item.Price * item.Quantity)</p>
+                            <EditForm Model="item">
+                                <InputNumber @bind-Value="item.Quantity" class="w-16 px-2 py-1 border border-gray-300 rounded" />
+                            </EditForm>
+                        </div>
+                    </div>
+                }
+                
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
+                    <p class="text-xl font-bold text-gray-800">Total (@cartItems.Count): $@cartItems.Sum(item => item.Price * item.Quantity)</p>
+                </div>
+                
+                <div class="text-center mt-6">
+                    <button class="px-6 py-3 bg-green-500 hover:bg-green-700 text-white font-bold rounded-lg transition" @onclick="PlaceOrder">
+                        Place Order
+                    </button>
+                </div>
+            </div>
+        }
     }
     else
     {
-        <div>
-            @foreach (var item in cartItems)
-            {
-                <div class="item-container">
-                    <div class="item-image-wrapper"><img src="@item.Image" class="item-image" /></div>
-                    <div class="item-name">
-                        <h5><a href="/product/@item.ProductId">@item.ProductTitle</a></h5>
-                        <span>@item.EditionName</span><br />
-                        <button class="btn-delete" @onclick="@(() => DeleteItem(item))">Delete</button>
-                        <EditForm Model="item">
-                            <InputNumber id="quantity" @bind-Value="item.Quantity"
-                                         class="form-control" style="width: 70px" />
-                        </EditForm>
+        <div class="text-center py-12">
+            <h1 class="text-3xl font-bold mb-4 text-green-600">Thank you for your order!</h1>
+            <h2 class="text-2xl font-semibold mb-8 text-gray-800">Here's what you'll get:</h2>
+            
+            <div class="space-y-4">
+                @foreach (var item in cartItems)
+                {
+                    <div class="flex gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div class="flex-shrink-0">
+                            <img src="@item.Image" alt="@item.ProductTitle" class="h-24 w-24 object-cover rounded" />
+                        </div>
+                        <div class="flex-1 text-left">
+                            <h5 class="text-lg font-semibold text-gray-800">
+                                <a href="/product/@item.ProductId" class="text-blue-600 hover:text-blue-800">@item.ProductTitle</a>
+                            </h5>
+                            <p class="text-sm text-gray-600">@item.EditionName</p>
+                        </div>
+                        <p class="text-lg font-bold text-gray-800">$@(item.Price * item.Quantity)</p>
                     </div>
-                    <div class="item-price">$@(item.Price * item.Quantity)</div>
+                }
+                
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
+                    <p class="text-xl font-bold text-gray-800">Total (@cartItems.Count): $@cartItems.Sum(item => item.Price * item.Quantity)</p>
                 </div>
-            }
-            <div class="item-price">
-                Total (@cartItems.Count): $@cartItems.Sum(item => item.Price * item.Quantity)
-            </div>
-            <div style="text-align: center; margin-top: 10px;">
-                <button class="btn btn-primary btn-lg" @onclick="PlaceOrder">Place Order</button>
             </div>
         </div>
     }
-}
-else
-{
-    <h3>Thank you for your order!</h3>
-    <h4>Here's what you'll get:</h4>
-    <div>
-        @foreach (var item in cartItems)
-        {
-            <div class="item-container">
-                <div class="item-image-wrapper"><img src="@item.Image" class="item-image" /></div>
-                <div class="item-name">
-                    <h5><a href="/product/@item.ProductId">@item.ProductTitle</a></h5>
-                    <span>@item.EditionName</span><br />
-                </div>
-                <div class="item-price">$@(item.Price * item.Quantity)</div>
-            </div>
-        }
-        <div class="item-price">
-            Total (@cartItems.Count): $@cartItems.Sum(item => item.Price * item.Quantity)
-        </div>
-    </div>
-}
+</div>
 
 @code {
     List<CartItem> cartItems = new List<CartItem>();
