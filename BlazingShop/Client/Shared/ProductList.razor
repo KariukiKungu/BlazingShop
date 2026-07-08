@@ -1,21 +1,21 @@
-﻿@inject IProductService ProductService
+@inject IProductService ProductService
 @implements IDisposable
 
-<ul class="list-unstyled">
+<ul class="list-none space-y-3">
     @foreach (var product in ProductService.Products)
     {
-        <li class="media my-3">
-            <div class="media-img-wrapper mr-2">
+        <li class="flex gap-4 p-3">
+            <div class="flex-shrink-0">
                 <a href="/product/@product.Id">
-                    <img class="media-img" src="@product.Image" alt="@product.Title" />
+                    <img class="h-32 w-32 object-cover rounded" src="@product.Image" alt="@product.Title" />
                 </a>
             </div>
-            <div class="media-body">
+            <div class="flex-1">
                 <a href="/product/@product.Id">
-                    <h4 class="mb-0">@product.Title</h4>
+                    <h4 class="text-lg font-semibold mb-2">@product.Title</h4>
                 </a>
-                <p>@product.Description</p>
-                <h5 class="price">
+                <p class="text-gray-600 mb-3">@product.Description</p>
+                <h5 class="text-xl font-bold text-green-600">
                     @GetPriceText(product)
                 </h5>
             </div>
